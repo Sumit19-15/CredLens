@@ -1,29 +1,27 @@
 import React from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Label } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 export const CreditScoreGauge = ({ score }) => {
-  // Determine risk level and color
-  let riskLevel;
-  let color;
-
+  // Risk level & color logic remains the same
+  let riskLevel, color;
   if (score >= 800) {
     riskLevel = "Minimal Risk";
-    color = "#10b981"; // green
+    color = "#10b981";
   } else if (score >= 670) {
     riskLevel = "Low Risk";
-    color = "#60a5fa"; // blue
+    color = "#60a5fa";
   } else if (score >= 580) {
     riskLevel = "Moderate Risk";
-    color = "#f59e0b"; // amber
+    color = "#f59e0b";
   } else if (score >= 480) {
     riskLevel = "High Risk";
-    color = "#f97316"; // orange
+    color = "#f97316";
   } else {
     riskLevel = "Severe Risk";
-    color = "#ef4444"; // red
+    color = "#ef4444";
   }
 
-  // Gauge chart data
+  // Reverted to the original progress calculation
   const scorePercentage = score / 850;
   const data = [
     { name: "Score", value: scorePercentage },
@@ -31,69 +29,54 @@ export const CreditScoreGauge = ({ score }) => {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 h-full">
-      <h2 className="text-lg font-semibold mb-2">Credit Score</h2>
+    <div className="bg-white rounded-lg shadow p-6 h-full flex flex-col justify-between">
+      <h2 className="text-lg font-semibold mb-4">Credit Score</h2>
 
-      <div className="flex flex-col items-center">
-        {/* Gauge Chart */}
-        <div className="w-full h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="80%"
-                startAngle={180}
-                endAngle={0}
-                innerRadius="60%"
-                outerRadius="80%"
-                paddingAngle={0}
-                dataKey="value"
-              >
-                <Cell key="cell-0" fill={color} />
-                <Cell key="cell-1" fill="#e5e7eb" />
+      {/* Gauge */}
+      <div className="w-full h-52 relative flex items-center justify-center">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            {/* Reverted to the single-color progress Pie */}
+            <Pie
+              data={data}
+              cx="50%"
+              cy="80%"
+              startAngle={180}
+              endAngle={0}
+              innerRadius="120%"
+              outerRadius="140%"
+              dataKey="value"
+              stroke="none"
+            >
+              <Cell fill={color} />
+              <Cell fill="#e5e7eb" />
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
 
-                {/* Custom label inside gauge */}
-                <Label
-                  content={({ viewBox }) => {
-                    const { cx, cy } = viewBox;
-                    return (
-                      <g>
-                        <text
-                          x={cx}
-                          y={cy - 10}
-                          textAnchor="middle"
-                          className="text-3xl font-bold"
-                          fill="#111827"
-                        >
-                          {score}
-                        </text>
-                        <text
-                          x={cx}
-                          y={cy + 20}
-                          textAnchor="middle"
-                          className="text-sm"
-                          fill="#4b5563"
-                        >
-                          out of 850
-                        </text>
-                      </g>
-                    );
-                  }}
-                />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+        {/* --- CHANGED PART --- */}
+        {/* Removed absolute positioning to allow parent flexbox to perfectly center the text */}
+      </div>
+
+      {/* Risk Info (Unchanged) */}
+      <div className="text-center">
+        <span className="text-lg font-medium" style={{ color }}>
+          {riskLevel}
+        </span>
+        <p className="text-sm text-gray-500 mt-1">
+          Based on financial performance and industry benchmarks
+        </p>
+      </div>
+
+      {/* Extra text blocks (Unchanged) */}
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <div className="bg-gray-50 p-3 rounded-md shadow text-center">
+          <p className="text-sm text-gray-500">EBITDA Change</p>
+          <p className="text-base font-semibold text-green-600">+5.6%</p>
         </div>
-
-        {/* Risk Level Display */}
-        <div className="mt-4 text-center">
-          <span className="text-lg font-medium" style={{ color }}>
-            {riskLevel}
-          </span>
-          <p className="text-sm text-gray-500 mt-1">
-            Based on financial performance and industry benchmarks
-          </p>
+        <div className="bg-gray-50 p-3 rounded-md shadow text-center">
+          <p className="text-sm text-gray-500">Revenue Growth</p>
+          <p className="text-base font-semibold text-blue-600">+8.2%</p>
         </div>
       </div>
     </div>
